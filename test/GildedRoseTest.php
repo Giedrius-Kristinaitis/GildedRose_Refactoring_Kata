@@ -107,4 +107,56 @@ class GildedRoseTest extends \PHPUnit\Framework\TestCase {
         $gilded_rose->updateQuality();
         $this->assertEquals(8, $items[0]->quality);
     }
+
+    public function testBackstagePassQualityShouldIncreaseByOne() {
+        $category_provider = new class() implements ItemCategoryProviderInterface {
+            public function getItemCategory($item_name) {
+                return new FixedQualityAfterSellInItemCategory('changing', 0, [new QualityUpdateRate(1, 10), new QualityUpdateRate(2, 5), new QualityUpdateRate(3, -1)], 0, 50);
+            }
+        };
+        
+        $items = [new Item('Backstage passes to a TAFKAL80ETC concert', 20, 10)];
+        $gilded_rose = new GildedRose($items, $category_provider);
+        $gilded_rose->updateQuality();
+        $this->assertEquals(11, $items[0]->quality);
+    }
+
+    public function testBackstagePassQualityShouldIncreaseByTwo() {
+        $category_provider = new class() implements ItemCategoryProviderInterface {
+            public function getItemCategory($item_name) {
+                return new FixedQualityAfterSellInItemCategory('changing', 0, [new QualityUpdateRate(1, 10), new QualityUpdateRate(2, 5), new QualityUpdateRate(3, -1)], 0, 50);
+            }
+        };
+        
+        $items = [new Item('Backstage passes to a TAFKAL80ETC concert', 7, 10)];
+        $gilded_rose = new GildedRose($items, $category_provider);
+        $gilded_rose->updateQuality();
+        $this->assertEquals(12, $items[0]->quality);
+    }
+
+    public function testBackstagePassQualityShouldIncreaseByThree() {
+        $category_provider = new class() implements ItemCategoryProviderInterface {
+            public function getItemCategory($item_name) {
+                return new FixedQualityAfterSellInItemCategory('changing', 0, [new QualityUpdateRate(1, 10), new QualityUpdateRate(2, 5), new QualityUpdateRate(3, -1)], 0, 50);
+            }
+        };
+        
+        $items = [new Item('Backstage passes to a TAFKAL80ETC concert', 3, 10)];
+        $gilded_rose = new GildedRose($items, $category_provider);
+        $gilded_rose->updateQuality();
+        $this->assertEquals(13, $items[0]->quality);
+    }
+
+    public function testBackstagePassQualityShouldDropToZeroAfterSellDate() {
+        $category_provider = new class() implements ItemCategoryProviderInterface {
+            public function getItemCategory($item_name) {
+                return new FixedQualityAfterSellInItemCategory('changing', 0, [new QualityUpdateRate(1, 10), new QualityUpdateRate(2, 5), new QualityUpdateRate(3, -1)], 0, 50);
+            }
+        };
+        
+        $items = [new Item('Backstage passes to a TAFKAL80ETC concert', -1, 10)];
+        $gilded_rose = new GildedRose($items, $category_provider);
+        $gilded_rose->updateQuality();
+        $this->assertEquals(0, $items[0]->quality);
+    }
 }
