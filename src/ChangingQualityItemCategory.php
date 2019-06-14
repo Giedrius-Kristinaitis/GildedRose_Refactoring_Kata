@@ -52,7 +52,7 @@ class ChangingQualityItemCategory extends AbstractItemCategory {
      * 
      * @return int Item's quality change (can be positive or negative)
      */
-	public function getUpdateRateValue($day) {
+	private function getUpdateRateValue($day) {
 		$update_rate_value = 0;
 		$previous_rate_day = PHP_INT_MIN;
 		
