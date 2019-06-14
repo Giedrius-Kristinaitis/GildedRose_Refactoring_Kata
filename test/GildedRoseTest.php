@@ -68,4 +68,30 @@ class GildedRoseTest extends \PHPUnit\Framework\TestCase {
         $gilded_rose->updateQuality();
         $this->assertEquals(6, $items[0]->quality);
     }
+
+    public function testItemQualityShouldNotGetGreaterThanFifty() {
+        $category_provider = new class() implements ItemCategoryProviderInterface {
+            public function getItemCategory($item_name) {
+                return new ChangingQualityItemCategory('changing', [new QualityUpdateRate(1, PHP_INT_MIN)], 0, 50);
+            }
+        };
+        
+        $items = [new Item('Aged Brie', -2, 50)];
+        $gilded_rose = new GildedRose($items, $category_provider);
+        $gilded_rose->updateQuality();
+        $this->assertEquals(50, $items[0]->quality);
+    }
+
+    public function testItemQualityShouldNotGetLowerThanZero() {
+        $category_provider = new class() implements ItemCategoryProviderInterface {
+            public function getItemCategory($item_name) {
+                return new ChangingQualityItemCategory('changing', [new QualityUpdateRate(-1, PHP_INT_MIN)], 0, 50);
+            }
+        };
+        
+        $items = [new Item('Normal Item', 5, 0)];
+        $gilded_rose = new GildedRose($items, $category_provider);
+        $gilded_rose->updateQuality();
+        $this->assertEquals(0, $items[0]->quality);
+    }
 }
