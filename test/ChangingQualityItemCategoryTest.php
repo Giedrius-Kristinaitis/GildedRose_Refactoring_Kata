@@ -26,4 +26,11 @@ class ChangingQualityItemCategoryTest extends \PHPUnit\Framework\TestCase {
         $category->updateItem($item);
         $this->assertEquals(50, $item->quality);
     }
+
+    public function testUpdateItemShouldChangeItemQuality() {
+        $category = new ChangingQualityItemCategory('changing', [new QualityUpdateRate(-1, 0)], 0, 50);
+        $item = new Item('item', 1, 46);
+        $category->updateItem($item);
+        $this->assertEquals(45, $item->quality);
+    }
 }
