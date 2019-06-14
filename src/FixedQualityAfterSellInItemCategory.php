@@ -24,7 +24,7 @@ class FixedQualityAfterSellInItemCategory extends ChangingQualityItemCategory {
      * @param Item $item The item to update
      */
 	public function updateItem($item) {
-        if ($item->sell_in < 0) {
+        if ($item->sell_in <= 0) {
             if ($item->quality != $this->quality_after_sell_in) {
                 $item->quality = $this->quality_after_sell_in;
             }
