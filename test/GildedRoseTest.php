@@ -98,11 +98,11 @@ class GildedRoseTest extends \PHPUnit\Framework\TestCase {
     public function testItemQualityShouldDecreaseTwiceAsFastAfterSellDate() {
         $category_provider = new class() implements ItemCategoryProviderInterface {
             public function getItemCategory($item_name) {
-                return new ChangingQualityItemCategory('changing', [new QualityUpdateRate(-1, -1), new QualityUpdateRate(-2, PHP_INT_MIN)], 0, 50);
+                return new ChangingQualityItemCategory('changing', [new QualityUpdateRate(-1, 0), new QualityUpdateRate(-2, PHP_INT_MIN)], 0, 50);
             }
         };
         
-        $items = [new Item('Normal Item', -1, 10)];
+        $items = [new Item('Normal Item', 0, 10)];
         $gilded_rose = new GildedRose($items, $category_provider);
         $gilded_rose->updateQuality();
         $this->assertEquals(8, $items[0]->quality);
@@ -150,17 +150,17 @@ class GildedRoseTest extends \PHPUnit\Framework\TestCase {
     public function testBackstagePassQualityShouldDropToZeroAfterSellDate() {
         $category_provider = new class() implements ItemCategoryProviderInterface {
             public function getItemCategory($item_name) {
-                return new FixedQualityAfterSellInItemCategory('changing', 0, [new QualityUpdateRate(1, 10), new QualityUpdateRate(2, 5), new QualityUpdateRate(3, -1)], 0, 50);
+                return new FixedQualityAfterSellInItemCategory('changing', 0, [new QualityUpdateRate(1, 10), new QualityUpdateRate(2, 5), new QualityUpdateRate(3, 0)], 0, 50);
             }
         };
         
-        $items = [new Item('Backstage passes to a TAFKAL80ETC concert', -1, 10)];
+        $items = [new Item('Backstage passes to a TAFKAL80ETC concert', 0, 10)];
         $gilded_rose = new GildedRose($items, $category_provider);
         $gilded_rose->updateQuality();
         $this->assertEquals(0, $items[0]->quality);
     }
 
-    public function testConjuredItemQualityShouldDegradeTwiceAsFast() {
+    public function testConjuredItemQualityShouldDegradeTwiceAsFastAsNormalItems() {
         $category_provider = new class() implements ItemCategoryProviderInterface {
             public function getItemCategory($item_name) {
                 return new ChangingQualityItemCategory('changing', [new QualityUpdateRate(-2, PHP_INT_MIN)], 0, 50);
@@ -171,5 +171,18 @@ class GildedRoseTest extends \PHPUnit\Framework\TestCase {
         $gilded_rose = new GildedRose($items, $category_provider);
         $gilded_rose->updateQuality();
         $this->assertEquals(8, $items[0]->quality);
+    }
+
+    public function testConjuredItemQualityShouldDegradeTwiceAsFastAfterSellDate() {
+        $category_provider = new class() implements ItemCategoryProviderInterface {
+            public function getItemCategory($item_name) {
+                return new ChangingQualityItemCategory('changing', [new QualityUpdateRate(-2, 0), new QualityUpdateRate(-4, PHP_INT_MIN)], 0, 50);
+            }
+        };
+        
+        $items = [new Item('Conjured Mana Cake', 0, 10)];
+        $gilded_rose = new GildedRose($items, $category_provider);
+        $gilded_rose->updateQuality();
+        $this->assertEquals(6, $items[0]->quality);
     }
 }
