@@ -18,7 +18,7 @@ It can be downloaded here: https://getcomposer.org/download/
 Getting Started
 ---------------
 
-To begin the kata, install the dependencies and run `phpunit`:
+Install the dependencies and run `phpunit`:
 
 ```
 cd php7
