@@ -2,8 +2,6 @@
 
 namespace App;
 
-use \App\FixedQualityItemCategory;
-
 class FixedQualityItemCategoryTest extends \PHPUnit\Framework\TestCase {
 
     public function testUpdateItemShouldNotChangeItemSellInDayValue() {

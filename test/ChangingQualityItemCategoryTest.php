@@ -2,8 +2,6 @@
 
 namespace App;
 
-use \App\ChangingQualityItemCategory;
-
 class ChangingQualityItemCategoryTest extends \PHPUnit\Framework\TestCase {
 
     public function testUpdateItemShouldDecreaseItemSellInValueByOne() {
