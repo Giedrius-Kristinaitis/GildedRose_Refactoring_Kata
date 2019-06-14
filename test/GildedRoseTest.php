@@ -30,6 +30,19 @@ class GildedRoseTest extends \PHPUnit\Framework\TestCase {
         $this->assertEquals(80, $items[0]->quality);
     }
 
+    public function testLegendaryItemShouldKeepResetToFixedQuality() {
+        $category_provider = new class() implements ItemCategoryProviderInterface {
+            public function getItemCategory($item_name) {
+                return new FixedQualityItemCategory('fixed', 80);
+            }
+        };
+        
+        $items = [new Item('Sulfuras, Hand of Ragnaros', -1, 50)];
+        $gilded_rose = new GildedRose($items, $category_provider);
+        $gilded_rose->updateQuality();
+        $this->assertEquals(80, $items[0]->quality);
+    }
+
     public function testAgedBrieItemShouldIncreaseQualityByOneBeforeSellDay() {
         $category_provider = new class() implements ItemCategoryProviderInterface {
             public function getItemCategory($item_name) {
