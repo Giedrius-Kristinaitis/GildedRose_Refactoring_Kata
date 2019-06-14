@@ -15,7 +15,7 @@ class ItemCategoryProvider implements ItemCategoryProviderInterface {
 
     /**
      * @var AbstractItemCategory[] $exceptional_item_categories The categories of items that 
-     *                                                        require special treatment
+     *                                                          require special treatment
      */
     private $exceptional_item_categories;
 
