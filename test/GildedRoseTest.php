@@ -30,7 +30,7 @@ class GildedRoseTest extends \PHPUnit\Framework\TestCase {
         $this->assertEquals(80, $items[0]->quality);
     }
 
-    public function testLegendaryItemShouldKeepResetToFixedQuality() {
+    public function testLegendaryItemShouldResetToFixedQuality() {
         $category_provider = new class() implements ItemCategoryProviderInterface {
             public function getItemCategory($item_name) {
                 return new FixedQualityItemCategory('fixed', 80);
@@ -158,5 +158,18 @@ class GildedRoseTest extends \PHPUnit\Framework\TestCase {
         $gilded_rose = new GildedRose($items, $category_provider);
         $gilded_rose->updateQuality();
         $this->assertEquals(0, $items[0]->quality);
+    }
+
+    public function testConjuredItemQualityShouldDegradeTwiceAsFast() {
+        $category_provider = new class() implements ItemCategoryProviderInterface {
+            public function getItemCategory($item_name) {
+                return new ChangingQualityItemCategory('changing', [new QualityUpdateRate(-2, PHP_INT_MIN)], 0, 50);
+            }
+        };
+        
+        $items = [new Item('Conjured Mana Cake', 5, 10)];
+        $gilded_rose = new GildedRose($items, $category_provider);
+        $gilded_rose->updateQuality();
+        $this->assertEquals(8, $items[0]->quality);
     }
 }
