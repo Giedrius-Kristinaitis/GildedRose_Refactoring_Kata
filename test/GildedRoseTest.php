@@ -185,4 +185,19 @@ class GildedRoseTest extends \PHPUnit\Framework\TestCase {
         $gilded_rose->updateQuality();
         $this->assertEquals(6, $items[0]->quality);
     }
+
+    public function testUpdateQualityShouldUpdateAllItems() {
+        $category_provider = new class() implements ItemCategoryProviderInterface {
+            public function getItemCategory($item_name) {
+                return new ChangingQualityItemCategory('changing', [new QualityUpdateRate(-1, 0)], 0, 50);
+            }
+        };
+        
+        $items = [new Item('Item 1', 5, 10), new Item('Item 2', 6, 12), new Item('Item 3', 7, 14)];
+        $gilded_rose = new GildedRose($items, $category_provider);
+        $gilded_rose->updateQuality();
+        $this->assertEquals(9, $items[0]->quality);
+        $this->assertEquals(11, $items[1]->quality);
+        $this->assertEquals(13, $items[2]->quality);
+    }
 }
